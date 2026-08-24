@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lift Tracker</title>
+<meta name="theme-color" content="#14161A">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lift">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+:root{
+  --bg:#14161A;--surface:#1D2026;--surface2:#252930;--steel:#394049;--line:#2A2E35;
+  --ink:#ECE9E3;--muted:#8F969F;--faint:#6A7079;
+  --gold:#D4A24E;--gold-dim:#5b431d;--blue:#6E93A8;--blue-dim:#1f3b46;
+  --green:#79A86E;--green-dim:#26361f;--warn:#E2483A;--warn-dim:#5e1f1a;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+.lt-root{max-width:540px;margin:0 auto;min-height:100vh;background:var(--bg);color:var(--ink);
+  font-family:Inter,system-ui,sans-serif;padding:0 0 110px;-webkit-font-smoothing:antialiased;padding-top:env(safe-area-inset-top)}
+.lt-head{padding:20px 18px 14px;border-bottom:1px solid var(--line);background:linear-gradient(180deg,#1a1d22,var(--bg))}
+.lt-eyebrow{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.22em;font-size:11px;color:var(--gold);font-weight:600}
+.lt-headrow{display:flex;align-items:flex-end;justify-content:space-between;margin-top:6px;gap:12px}
+.lt-title{font-family:Oswald,sans-serif;font-weight:700;font-size:30px;line-height:1;letter-spacing:.01em}
+.lt-headmeta{text-align:right;font-size:11px;color:var(--faint);font-family:Oswald,sans-serif;letter-spacing:.1em;text-transform:uppercase;line-height:1.6}
+.lt-tabs{display:flex;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+.lt-tab{flex:1;background:none;border:none;color:var(--faint);padding:13px 4px;cursor:pointer;font-family:Oswald,sans-serif;
+  text-transform:uppercase;letter-spacing:.12em;font-size:12px;border-bottom:2px solid transparent;transition:.15s}
+.lt-tab.is-active{color:var(--gold);border-bottom-color:var(--gold)}
+.lt-main{padding:16px 14px}
+.lt-daypick{display:flex;gap:8px;margin-bottom:14px}
+.lt-daybtn{flex:1;background:var(--surface);border:1px solid var(--line);color:var(--muted);border-radius:5px;padding:9px 4px;
+  cursor:pointer;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:11px;line-height:1.5}
+.lt-daybtn b{display:block;color:var(--ink);font-size:13px;font-weight:600}
+.lt-daybtn.is-on{border-color:var(--gold);background:#221d14}
+.lt-daybtn.is-on b{color:var(--gold)}
+.lt-daybar{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.lt-day-no{font-family:Oswald,sans-serif;font-weight:700;font-size:12px;color:var(--bg);background:var(--gold);
+  padding:7px 11px;border-radius:3px;text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.lt-day-title{font-family:Oswald,sans-serif;font-weight:600;font-size:20px}
+.lt-blurb{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:14px}
+.lt-warm{background:var(--surface);border-left:3px solid var(--blue);border-radius:0 5px 5px 0;margin-bottom:16px;overflow:hidden}
+.lt-warm summary{list-style:none;cursor:pointer;padding:11px 13px;font-family:Oswald,sans-serif;text-transform:uppercase;
+  letter-spacing:.12em;font-size:11px;color:var(--blue);display:flex;justify-content:space-between}
+.lt-warm summary::-webkit-details-marker{display:none}
+.lt-warm ul{margin:0;padding:0 14px 13px 30px;color:var(--muted);font-size:12.5px;line-height:1.9}
+.lt-move{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:13px;margin-bottom:11px}
+.lt-move-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.lt-move-name{font-family:Oswald,sans-serif;font-weight:600;font-size:16px;line-height:1.25}
+.lt-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.lt-tag{font-family:Oswald,sans-serif;font-size:9px;text-transform:uppercase;letter-spacing:.11em;padding:2px 6px;border-radius:2px;font-weight:600}
+.lt-t-pat{background:var(--surface2);color:var(--muted)}
+.lt-t-sag{background:#2b2e34;color:var(--faint)}
+.lt-t-fro{background:var(--blue-dim);color:var(--blue)}
+.lt-t-tra{background:var(--green-dim);color:var(--green)}
+.lt-t-uni{background:var(--gold-dim);color:var(--gold)}
+.lt-state{font-family:Oswald,sans-serif;font-size:10px;text-transform:uppercase;letter-spacing:.12em;font-weight:600;
+  padding:3px 8px;border-radius:2px;white-space:nowrap}
+.lt-s-progress{background:var(--green-dim);color:var(--green)}
+.lt-s-hold{background:#33373d;color:var(--muted)}
+.lt-s-backoff{background:var(--warn-dim);color:var(--warn)}
+.lt-s-base{background:var(--gold-dim);color:var(--gold)}
+.lt-cue{font-size:11.5px;color:var(--faint);line-height:1.45;margin:9px 0 2px}
+.lt-reason{font-size:11.5px;color:var(--muted);line-height:1.45;margin:8px 0 4px}
+.lt-set{display:flex;align-items:flex-end;gap:9px;margin-top:10px}
+.lt-set-lbl{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.12em;font-size:10px;color:var(--faint);
+  width:38px;padding-bottom:11px;flex:none}
+.lt-field{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0}
+.lt-field>span{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:9.5px;color:var(--faint)}
+.lt-input{background:var(--surface2);border:1px solid var(--steel);color:var(--ink);border-radius:4px;padding:9px 8px;
+  font-size:16px;width:100%;font-family:Inter,sans-serif;text-align:center}
+.lt-input:focus{outline:none;border-color:var(--gold)}
+.lt-input.is-auto{border-color:var(--gold-dim);color:var(--gold)}
+.lt-arrow{font-size:11px;color:var(--muted);margin:8px 0 0;font-family:Oswald,sans-serif;letter-spacing:.06em}
+.lt-arrow b{color:var(--gold)}
+.lt-rest{margin-top:11px;background:none;border:1px solid var(--steel);color:var(--muted);padding:7px 11px;border-radius:4px;
+  font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px;cursor:pointer}
+.lt-sessmeta{display:flex;gap:10px;margin:18px 0 12px;align-items:flex-end}
+.lt-log{width:100%;background:var(--gold);color:#14161A;border:none;border-radius:5px;padding:16px;font-family:Oswald,sans-serif;
+  text-transform:uppercase;letter-spacing:.12em;font-size:15px;font-weight:600;cursor:pointer}
+.lt-log:active{transform:translateY(1px)}
+.lt-hist{background:var(--surface);border:1px solid var(--line);border-radius:6px;margin-bottom:10px;overflow:hidden}
+.lt-hist summary{list-style:none;cursor:pointer;padding:12px 13px;display:flex;align-items:center;gap:11px}
+.lt-hist summary::-webkit-details-marker{display:none}
+.lt-hist-day{font-family:Oswald,sans-serif;font-weight:700;color:var(--gold);font-size:12px}
+.lt-hist-title{font-family:Oswald,sans-serif;font-size:15px;flex:1}
+.lt-hist-date{font-size:11px;color:var(--faint);font-family:Oswald,sans-serif;letter-spacing:.08em}
+.lt-hist-body{padding:0 13px 13px;border-top:1px solid var(--line)}
+.lt-hist-row{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;color:var(--muted);border-bottom:1px solid #22262c}
+.lt-hist-val{color:var(--ink);font-family:Oswald,sans-serif;letter-spacing:.02em;white-space:nowrap}
+.lt-hist-notes{font-size:12.5px;color:var(--muted);font-style:italic;margin-top:9px}
+.lt-del{margin-top:10px;background:none;border:1px solid var(--warn-dim);color:var(--warn);padding:6px 10px;border-radius:4px;
+  font-size:11px;cursor:pointer;font-family:Oswald,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.lt-sect{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.16em;font-size:11px;color:var(--gold);margin:20px 0 10px}
+.lt-sect:first-child{margin-top:0}
+.lt-prog-day{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:13px;margin-bottom:12px}
+.lt-prog-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #22262c;font-size:13px;align-items:baseline}
+.lt-prog-row:last-child{border-bottom:none}
+.lt-prog-no{font-family:Oswald,sans-serif;color:var(--faint);width:16px;flex:none}
+.lt-prog-nm{flex:1}
+.lt-prog-tag{font-size:10px;color:var(--faint);font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.08em;text-align:right}
+.lt-cov{width:100%;border-collapse:collapse;font-size:12.5px}
+.lt-cov td{padding:6px 0;border-bottom:1px solid #22262c;color:var(--muted)}
+.lt-cov td:first-child{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--ink);width:40%}
+.lt-fine{font-size:11.5px;color:var(--faint);line-height:1.6;margin-top:14px}
+.lt-startrow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #22262c}
+.lt-startnm{flex:1;font-size:13px}
+.lt-startsub{font-size:10.5px;color:var(--faint)}
+.lt-step{width:34px;height:34px;border:1px solid var(--steel);background:var(--surface2);color:var(--ink);border-radius:4px;
+  cursor:pointer;font-size:17px;line-height:1;flex:none}
+.lt-startval{font-family:Oswald,sans-serif;font-size:14px;color:var(--gold);width:66px;text-align:center;flex:none}
+.lt-btnrow{display:flex;gap:9px;margin:8px 0 16px}
+.lt-ghost{flex:1;background:var(--surface2);border:1px solid var(--steel);color:var(--ink);padding:12px;border-radius:5px;
+  cursor:pointer;font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:12px}
+.lt-reset{background:none;border:1px solid var(--warn);color:var(--warn);padding:11px;border-radius:5px;width:100%;cursor:pointer;
+  font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:12px;margin-top:6px}
+.lt-empty{color:var(--muted);font-size:13px;line-height:1.6;padding:14px 0}
+.lt-toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--surface2);border:1px solid var(--gold);
+  color:var(--ink);padding:11px 18px;border-radius:6px;font-size:13px;box-shadow:0 8px 30px rgba(0,0,0,.5);z-index:20;max-width:90%;text-align:center}
+.lt-timer{position:fixed;bottom:0;left:0;right:0;background:var(--surface2);border-top:1px solid var(--gold-dim);z-index:15;
+  display:none;align-items:center;justify-content:center;gap:16px;padding:12px 16px calc(12px + env(safe-area-inset-bottom))}
+.lt-timer.is-on{display:flex}
+.lt-timer-num{font-family:Oswald,sans-serif;font-weight:700;font-size:26px;color:var(--gold);font-feature-settings:"tnum"}
+.lt-timer-lbl{font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.14em;font-size:10px;color:var(--faint)}
+.lt-timer-x{background:none;border:1px solid var(--steel);color:var(--muted);border-radius:4px;padding:7px 12px;cursor:pointer;
+  font-family:Oswald,sans-serif;text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+</style>
+</head>
+<body>
+<div id="root" class="lt-root"></div>
+<div id="timer" class="lt-timer">
+  <span class="lt-timer-lbl">Rest</span>
+  <span id="timerNum" class="lt-timer-num">2:00</span>
+  <button id="timerX" class="lt-timer-x">Stop</button>
+</div>
+<input type="file" id="importFile" accept="application/json" style="display:none">
+<script>
+(function(){
+"use strict";
+
+/* ---------------------------------------------------------------
+   LIFT TRACKER — 3-day full-body resistance program
+   Progression philosophy (Keith's rule), applied to EVERY set:
+     reps <= 6   -> drop the load one increment
+     reps 7-9    -> repeat the load
+     reps >= 10  -> add one increment
+   Set 2's load is computed live from set 1's result.
+   Next session's set 1 = set 2's load, adjusted by set 2's reps.
+   Unilateral moves: the weaker side governs (load + rep target).
+   --------------------------------------------------------------- */
+
+var STORE_KEY = "lift-tracker";
+
+var PROGRAM = [
+  {
+    n:1, dow:"Mon", title:"Squat + Horizontal",
+    blurb:"Bilateral squat and heavy horizontal pressing/rowing, then a frontal-plane lunge, a shoulder-safe overhead press, and a rotational finisher.",
+    warmup:[
+      "Bike or row — 5 min easy",
+      "90/90 hip switch — 8/side",
+      "World&#39;s greatest stretch — 5/side",
+      "Banded pull-apart — 15",
+      "Glute bridge — 12",
+      "Empty-bar Zercher hold — 20 sec"
+    ],
+    moves:[
+      {key:"zercher",   name:"Zercher Squat",              pattern:"Squat",      plane:"sagittal",   uni:false, incr:5,  start:95, cue:"Bar in the elbow crooks, ribs down, sit between the hips. Torso stays tall — no forward dump."},
+      {key:"dbbench",   name:"DB Bench Press, Neutral Grip",pattern:"Horiz push", plane:"sagittal",   uni:false, incr:5,  start:45, cue:"Palms facing, elbows ~45 deg. Neutral grip keeps the shoulder out of the painful arc.", perHand:true},
+      {key:"csrow",     name:"Chest-Supported DB Row",      pattern:"Horiz pull", plane:"sagittal",   uni:false, incr:5,  start:45, cue:"Chest stays on the pad — no body english. Drive elbows back, pause 1 sec.", perHand:true},
+      {key:"latlunge",  name:"Goblet Lateral Lunge",        pattern:"Squat",      plane:"frontal",    uni:true,  incr:5,  start:35, cue:"Push straight sideways, trail leg locked. Load the working hip, not the knee."},
+      {key:"lmpress",   name:"Half-Kneeling Landmine Press",pattern:"Vert push",  plane:"transverse", uni:true,  incr:5,  start:25, cue:"Angled press = overhead without the impingement. Down knee same side as the pressing arm; ribs down."},
+      {key:"chop",      name:"Half-Kneeling Cable Chop",    pattern:"Rotation",   plane:"transverse", uni:true,  incr:10, start:30, cue:"High to low. Rotate through the ribcage, hips quiet. Control the return."}
+    ]
+  },
+  {
+    n:2, dow:"Wed", title:"Hinge + Vertical",
+    blurb:"Trap-bar hinge as the main lift, both vertical patterns, a unilateral squat, and anti-rotation work to close.",
+    warmup:[
+      "Bike or row — 5 min easy",
+      "Cat-cow — 8",
+      "Dead bug — 8/side",
+      "Hip airplane — 5/side",
+      "Band face pull — 15",
+      "Trap-bar ramp sets — 5 @ ~50%, 3 @ ~75%"
+    ],
+    moves:[
+      {key:"trapdl",    name:"Trap-Bar Deadlift",           pattern:"Hinge",      plane:"sagittal",   uni:false, incr:5,  start:155, cue:"Back history: stay ramped and honest. Hips back, lats on, push the floor away. Stop the set if the low back rounds."},
+      {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:10, start:100, cue:"Assisted chin-up works here too. Chest up, drive elbows to the pockets."},
+      {key:"dbohp",     name:"Seated DB Neutral-Grip Press",pattern:"Vert push",  plane:"sagittal",   uni:false, incr:5,  start:30,  cue:"Palms facing throughout. If the shoulder complains, drop to a 30 deg incline instead of pressing through it.", perHand:true},
+      {key:"bulgarian", name:"Bulgarian Split Squat",       pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:30,  cue:"Front shin slightly forward, torso a touch inclined. If the knee gets cranky, swap to a reverse lunge and note it.", perHand:true},
+      {key:"cablerow1", name:"1-Arm Cable Row, Split Stance",pattern:"Horiz pull",plane:"transverse", uni:true,  incr:10, start:50,  cue:"Let the torso rotate open on the stretch, then pull square. Anti-rotation on the way back."},
+      {key:"pallof",    name:"Pallof Press",                pattern:"Anti-rotation",plane:"transverse",uni:true, incr:10, start:30,  cue:"Reps = slow 3-sec presses. Resist the pull; nothing rotates."}
+    ]
+  },
+  {
+    n:3, dow:"Fri", title:"Unilateral + Rotation",
+    blurb:"Everything single-side: hinge, lunge, press, pull — the day that finds and fixes the imbalances, finished with loaded rotation.",
+    warmup:[
+      "Bike or row — 5 min easy",
+      "Single-leg balance reach — 5/side",
+      "Adductor rock-back — 8/side",
+      "Thoracic open book — 8/side",
+      "Scap push-up — 10",
+      "KB halo — 6/direction"
+    ],
+    moves:[
+      {key:"slrdl",     name:"Single-Leg RDL",              pattern:"Hinge",      plane:"transverse", uni:true,  incr:5,  start:30, cue:"Hips square — the frontal/transverse control IS the exercise. Light and clean beats heavy and wobbly.", perHand:true},
+      {key:"revlunge",  name:"DB Reverse Lunge",            pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:35, cue:"Step back, drop straight down, drive through the front heel. Knee-friendlier than a forward lunge.", perHand:true},
+      {key:"dbbench1",  name:"1-Arm DB Bench Press",        pattern:"Horiz push", plane:"transverse", uni:true,  incr:5,  start:45, cue:"One dumbbell only — the trunk fights the rotation. Glutes tight, hips level."},
+      {key:"kbbup",     name:"KB Bottoms-Up Press, Half-Kneeling",pattern:"Vert push",plane:"transverse",uni:true,incr:5,start:20, cue:"Bell inverted, crush the handle. Stops well short of the loads that bother your shoulder — that is the point."},
+      {key:"chinup",    name:"Chin-Up (or 1-Arm Pulldown)", pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:0,  bw:true, cue:"Load = added weight. At 0 and still under 7 reps, use band or machine assist and log the reps you get."},
+      {key:"rotrow",    name:"Cable Rotational Row",        pattern:"Rotation",   plane:"transverse", uni:true,  incr:10, start:40, cue:"Rotate away, then pull and rotate through. Hips lead, arms finish."}
+    ]
+  }
+];
+
+var COVERAGE = [
+  ["Squat",        "Zercher (D1) &middot; lateral lunge (D1) &middot; Bulgarian (D2) &middot; reverse lunge (D3)"],
+  ["Hinge",        "Trap-bar deadlift (D2) &middot; single-leg RDL (D3)"],
+  ["Horiz push",   "DB bench (D1) &middot; 1-arm DB bench (D3)"],
+  ["Vert push",    "Landmine (D1) &middot; seated DB neutral (D2) &middot; KB bottoms-up (D3)"],
+  ["Horiz pull",   "Chest-supported row (D1) &middot; 1-arm cable row (D2) &middot; rotational row (D3)"],
+  ["Vert pull",    "Pulldown / chin (D2) &middot; chin-up (D3)"],
+  ["Frontal",      "Lateral lunge, Pallof, single-leg RDL, 1-arm carries of load"],
+  ["Transverse",   "Cable chop, Pallof, rotational row, 1-arm press and row"]
+];
+
+/* ---------------- state ---------------- */
+
+var state = {
+  tab:"today",
+  day:null,          // chosen day number, null = auto
+  draft:{},          // key -> {s1:{load,reps,repsL,repsR}, s2:{...}, s2dirty:bool}
+  notes:"",
+  bw:"",
+  data:{ sessions:[], starts:{} }
+};
+
+var timer = { id:null, left:0 };
+
+/* ---------------- helpers ---------------- */
+
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];});}
+
+function num(v){ if(v===""||v==null) return NaN; var n=Number(v); return isNaN(n)?NaN:n; }
+
+function moveById(key){
+  for(var i=0;i<PROGRAM.length;i++)
+    for(var j=0;j<PROGRAM[i].moves.length;j++)
+      if(PROGRAM[i].moves[j].key===key) return PROGRAM[i].moves[j];
+  return null;
+}
+
+function dayByN(n){ for(var i=0;i<PROGRAM.length;i++) if(PROGRAM[i].n===n) return PROGRAM[i]; return PROGRAM[0]; }
+
+function startFor(m){
+  var s=state.data.starts||{};
+  return s[m.key]==null ? m.start : s[m.key];
+}
+
+function minLoad(m){ return m.bw ? 0 : m.incr; }
+
+/* The rule, applied to one set. */
+function adjust(load,reps,m){
+  if(load==null||isNaN(load)) return load;
+  if(reps==null||isNaN(reps)) return load;
+  if(reps>=10) return load + m.incr;
+  if(reps<=6)  return Math.max(minLoad(m), load - m.incr);
+  return load;
+}
+
+/* Governing reps for a set: weaker side on unilateral work. */
+function govReps(set,m){
+  if(!set) return NaN;
+  if(m.uni){
+    var l=num(set.repsL), r=num(set.repsR);
+    if(isNaN(l)&&isNaN(r)) return NaN;
+    if(isNaN(l)) return r;
+    if(isNaN(r)) return l;
+    return Math.min(l,r);
+  }
+  return num(set.reps);
+}
+
+function unitFor(m){ return m.perHand ? "lb/hand" : "lb"; }
+
+function lastSessionFor(dayN,key){
+  var ss=state.data.sessions;
+  for(var i=0;i<ss.length;i++){
+    if(ss[i].day===dayN && ss[i].moves && ss[i].moves[key] && ss[i].moves[key].s2 &&
+       ss[i].moves[key].s2.load!=null && !isNaN(Number(ss[i].moves[key].s2.load))) return ss[i];
+  }
+  return null;
+}
+
+/* Next session's opening load = last set 2's load, adjusted by last set 2's reps. */
+function prescribe(m,dayN){
+  var sess=lastSessionFor(dayN,m.key);
+  if(!sess) return {load:startFor(m), state:"base", reason:"First time through — starting load. Nudge it in Settings if it is off."};
+  var s2=sess.moves[m.key].s2;
+  var prev=Number(s2.load);
+  var reps=govReps(s2,m);
+  var next=adjust(prev,reps,m);
+  var st = next>prev ? "progress" : (next<prev ? "backoff" : "hold");
+  var repTxt = isNaN(reps) ? "no reps logged" : reps+" reps";
+  var tail = st==="progress" ? "hit 10+, so up one increment."
+           : st==="backoff"  ? "under 7, so back off one increment."
+           : "in the 7-9 window, so repeat it.";
+  var sideNote = m.uni && !isNaN(reps) ? " (weaker side)" : "";
+  return {load:next, state:st, reason:"Last "+sess.date+": set 2 was "+prev+" "+unitFor(m)+" for "+repTxt+sideNote+" — "+tail};
+}
+
+function stateLabel(s){ return {base:"Start",progress:"Progress",hold:"Hold",backoff:"Back off"}[s]||s; }
+
+function today(){
+  var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+
+function autoDay(){
+  var ss=state.data.sessions;
+  if(!ss.length) return 1;
+  var last=ss[0].day;
+  return last>=3 ? 1 : last+1;
+}
+
+function currentDayN(){ return state.day || autoDay(); }
+
+/* ---------------- persistence ---------------- */
+
+function load(){
+  try{
+    var raw=localStorage.getItem(STORE_KEY);
+    if(raw){
+      state.data=JSON.parse(raw);
+      if(!state.data.sessions) state.data.sessions=[];
+      if(!state.data.starts) state.data.starts={};
+    }
+  }catch(e){}
+}
+function persist(){
+  try{ localStorage.setItem(STORE_KEY,JSON.stringify(state.data)); }
+  catch(e){ toast("Couldn&#39;t save to this device&#39;s storage."); }
+}
+
+function toast(msg){
+  var t=document.getElementById("toast");
+  if(!t){ t=document.createElement("div"); t.id="toast"; document.body.appendChild(t); }
+  t.className="lt-toast"; t.innerHTML=msg;
+  clearTimeout(t._h); t._h=setTimeout(function(){ t.className=""; t.textContent=""; },2600);
+}
+
+/* ---------------- draft ---------------- */
+
+function draftFor(key){
+  if(!state.draft[key]) state.draft[key]={s1:{},s2:{},s2dirty:false};
+  return state.draft[key];
+}
+
+function set1Load(m,dayN){
+  var d=draftFor(m.key);
+  if(d.s1.load!=null && d.s1.load!=="") return Number(d.s1.load);
+  return prescribe(m,dayN).load;
+}
+
+/* Live: set 2 load follows set 1's result unless manually overridden. */
+function set2Load(m,dayN){
+  var d=draftFor(m.key);
+  if(d.s2dirty && d.s2.load!=null && d.s2.load!=="") return Number(d.s2.load);
+  var l1=set1Load(m,dayN);
+  var r1=govReps(d.s1,m);
+  return adjust(l1,r1,m);
+}
+
+/* ---------------- render ---------------- */
+
+function render(){
+  var root=document.getElementById("root");
+  var t=dayByN(currentDayN());
+  var html=headHTML()+tabsHTML()+"<div class='lt-main'>";
+  if(state.tab==="today")        html+=todayHTML(t);
+  else if(state.tab==="history") html+=historyHTML();
+  else if(state.tab==="program") html+=programHTML();
+  else                            html+=settingsHTML();
+  html+="</div>";
+  root.innerHTML=html;
+  bind();
+}
+
+function headHTML(){
+  var n=state.data.sessions.length;
+  var last=n?state.data.sessions[0].date:"—";
+  return "<header class='lt-head'>"+
+    "<div class='lt-eyebrow'>Full Body &middot; 3 Day &middot; Mon / Wed / Fri</div>"+
+    "<div class='lt-headrow'>"+
+      "<div class='lt-title'>LIFT TRACKER</div>"+
+      "<div class='lt-headmeta'>"+n+" session"+(n===1?"":"s")+"<br>Last: "+esc(last)+"</div>"+
+    "</div></header>";
+}
+
+function tabsHTML(){
+  var tabs=[["today","Today"],["history","History"],["program","Program"],["settings","Settings"]];
+  return "<nav class='lt-tabs'>"+tabs.map(function(t){
+    return "<button class='lt-tab"+(state.tab===t[0]?" is-active":"")+"' data-tab='"+t[0]+"'>"+t[1]+"</button>";
+  }).join("")+"</nav>";
+}
+
+function planeTag(p){
+  var cls = p==="frontal" ? "lt-t-fro" : p==="transverse" ? "lt-t-tra" : "lt-t-sag";
+  return "<span class='lt-tag "+cls+"'>"+p+"</span>";
+}
+
+function todayHTML(t){
+  var h="<div class='lt-daypick'>"+PROGRAM.map(function(d){
+    return "<button class='lt-daybtn"+(d.n===t.n?" is-on":"")+"' data-day='"+d.n+"'>"+d.dow+"<b>Day "+d.n+"</b></button>";
+  }).join("")+"</div>";
+
+  h+="<div class='lt-daybar'><span class='lt-day-no'>Day "+t.n+"</span>"+
+     "<span class='lt-day-title'>"+t.title+"</span></div>"+
+     "<p class='lt-blurb'>"+t.blurb+"</p>";
+
+  h+="<details class='lt-warm'><summary><span>Warm-up &middot; 6-8 min</span><span>+</span></summary><ul>"+
+     t.warmup.map(function(w){return "<li>"+w+"</li>";}).join("")+"</ul></details>";
+
+  t.moves.forEach(function(m){
+    var p=prescribe(m,t.n);
+    var d=draftFor(m.key);
+    var l1=set1Load(m,t.n), l2=set2Load(m,t.n);
+    var arrow = l2>l1 ? "<b>&uarr; up "+m.incr+"</b>" : l2<l1 ? "<b>&darr; down "+m.incr+"</b>" : "same load";
+
+    h+="<div class='lt-move'>";
+    h+="<div class='lt-move-top'><div><div class='lt-move-name'>"+m.name+"</div>"+
+       "<div class='lt-tags'><span class='lt-tag lt-t-pat'>"+m.pattern+"</span>"+planeTag(m.plane)+
+       (m.uni?"<span class='lt-tag lt-t-uni'>unilateral</span>":"")+"</div></div>"+
+       "<span class='lt-state lt-s-"+p.state+"'>"+stateLabel(p.state)+"</span></div>";
+    h+="<p class='lt-cue'>"+m.cue+"</p>";
+    h+="<p class='lt-reason'>"+p.reason+"</p>";
+
+    h+=setRowHTML(m,"s1","Set 1",l1,false);
+    h+="<p class='lt-arrow'>Set 1 result &rarr; "+arrow+" for set 2</p>";
+    h+=setRowHTML(m,"s2","Set 2",l2,!d.s2dirty);
+    h+="<button class='lt-rest' data-rest='120'>Rest 2:00</button>";
+    h+="</div>";
+  });
+
+  h+="<div class='lt-sessmeta'>"+
+     "<label class='lt-field'><span>Bodyweight (opt)</span>"+
+     "<input class='lt-input' id='bwInput' type='number' inputmode='decimal' value='"+esc(state.bw)+"'></label>"+
+     "<label class='lt-field' style='flex:2'><span>Notes</span>"+
+     "<input class='lt-input' id='notesInput' type='text' style='text-align:left' value='"+esc(state.notes)+"'></label></div>";
+  h+="<button class='lt-log' id='logBtn'>Log Day "+t.n+"</button>";
+  return h;
+}
+
+function setRowHTML(m,slot,label,loadVal,isAuto){
+  var d=draftFor(m.key);
+  var s=d[slot]||{};
+  var h="<div class='lt-set'><span class='lt-set-lbl'>"+label+"</span>";
+  h+="<label class='lt-field'><span>"+unitFor(m)+"</span>"+
+     "<input class='lt-input"+(isAuto?" is-auto":"")+"' type='number' inputmode='decimal' step='"+m.incr+"' "+
+     "data-load='"+m.key+"' data-slot='"+slot+"' value='"+(isNaN(loadVal)?"":loadVal)+"'></label>";
+  if(m.uni){
+    h+="<label class='lt-field'><span>Reps L</span><input class='lt-input' type='number' inputmode='numeric' "+
+       "data-reps='"+m.key+"' data-slot='"+slot+"' data-side='L' value='"+esc(s.repsL||"")+"'></label>";
+    h+="<label class='lt-field'><span>Reps R</span><input class='lt-input' type='number' inputmode='numeric' "+
+       "data-reps='"+m.key+"' data-slot='"+slot+"' data-side='R' value='"+esc(s.repsR||"")+"'></label>";
+  }else{
+    h+="<label class='lt-field'><span>Reps</span><input class='lt-input' type='number' inputmode='numeric' "+
+       "data-reps='"+m.key+"' data-slot='"+slot+"' value='"+esc(s.reps||"")+"'></label>";
+  }
+  h+="</div>";
+  return h;
+}
+
+function historyHTML(){
+  var ss=state.data.sessions;
+  if(!ss.length) return "<p class='lt-empty'>No sessions logged yet. Finish Day 1 and it will show up here.</p>";
+  return ss.map(function(s){
+    var d=dayByN(s.day);
+    var rows=d.moves.map(function(m){
+      var e=s.moves[m.key]; if(!e) return "";
+      return "<div class='lt-hist-row'><span>"+m.name+"</span><span class='lt-hist-val'>"+
+             setSummary(e.s1,m)+" &nbsp;/&nbsp; "+setSummary(e.s2,m)+"</span></div>";
+    }).join("");
+    return "<details class='lt-hist'><summary>"+
+      "<span class='lt-hist-day'>D"+s.day+"</span>"+
+      "<span class='lt-hist-title'>"+d.title+"</span>"+
+      "<span class='lt-hist-date'>"+esc(s.date)+"</span></summary>"+
+      "<div class='lt-hist-body'>"+rows+
+      (s.bw?"<div class='lt-hist-row'><span>Bodyweight</span><span class='lt-hist-val'>"+esc(s.bw)+" lb</span></div>":"")+
+      (s.notes?"<p class='lt-hist-notes'>"+esc(s.notes)+"</p>":"")+
+      "<button class='lt-del' data-del='"+s.id+"'>Delete</button></div></details>";
+  }).join("");
+}
+
+function setSummary(set,m){
+  if(!set||set.load==null||set.load==="") return "—";
+  var reps = m.uni ? (set.repsL||"?")+"/"+(set.repsR||"?") : (set.reps||"?");
+  return set.load+" &times; "+reps;
+}
+
+function programHTML(){
+  var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90-120 sec rest. Every set is autoregulated: "+
+        "<b>6 or fewer &rarr; drop</b>, <b>7-9 &rarr; repeat</b>, <b>10+ &rarr; add</b>. Barbell moves step 5 lb total (2.5/side), "+
+        "dumbbells 5 lb per hand, cable stacks 10 lb.</p>";
+  PROGRAM.forEach(function(d){
+    h+="<div class='lt-sect'>"+d.dow+" &middot; Day "+d.n+" &mdash; "+d.title+"</div><div class='lt-prog-day'>"+
+       d.moves.map(function(m,i){
+         return "<div class='lt-prog-row'><span class='lt-prog-no'>"+(i+1)+"</span>"+
+                "<span class='lt-prog-nm'>"+m.name+"</span>"+
+                "<span class='lt-prog-tag'>"+m.pattern+"<br>"+m.plane+"</span></div>";
+       }).join("")+"</div>";
+  });
+  h+="<div class='lt-sect'>Weekly coverage</div><table class='lt-cov'>"+
+     COVERAGE.map(function(r){return "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td></tr>";}).join("")+"</table>";
+  h+="<p class='lt-fine'>No barbell back squat, no front squat, no barbell strict press &mdash; overhead work is landmine, "+
+     "neutral-grip dumbbell, and bottoms-up kettlebell only. Unilateral work is gated by the weaker side: log both sides, "+
+     "the lower number drives the load, and the strong side stops at the weak side&#39;s rep count.</p>";
+  return h;
+}
+
+function settingsHTML(){
+  var h="<div class='lt-sect'>Starting loads</div><p class='lt-blurb'>Used the first time a movement is performed. "+
+        "Once a movement has history, the app takes over.</p>";
+  PROGRAM.forEach(function(d){
+    h+="<div class='lt-sect'>Day "+d.n+" &mdash; "+d.title+"</div>";
+    d.moves.forEach(function(m){
+      h+="<div class='lt-startrow'><div class='lt-startnm'>"+m.name+
+         "<div class='lt-startsub'>step "+m.incr+" "+unitFor(m)+"</div></div>"+
+         "<button class='lt-step' data-step='"+m.key+"' data-dir='-1'>&minus;</button>"+
+         "<span class='lt-startval'>"+startFor(m)+"</span>"+
+         "<button class='lt-step' data-step='"+m.key+"' data-dir='1'>+</button></div>";
+    });
+  });
+  h+="<div class='lt-sect'>Data</div><div class='lt-btnrow'>"+
+     "<button class='lt-ghost' id='exportBtn'>Export</button>"+
+     "<button class='lt-ghost' id='importBtn'>Import</button></div>"+
+     "<button class='lt-reset' id='resetBtn'>Erase all sessions</button>"+
+     "<p class='lt-fine'>Everything lives in this device&#39;s local storage. Export writes a JSON backup.</p>";
+  return h;
+}
+
+/* ---------------- bind ---------------- */
+
+function bind(){
+  var root=document.getElementById("root");
+
+  root.querySelectorAll("[data-tab]").forEach(function(b){
+    b.addEventListener("click",function(){ state.tab=b.dataset.tab; render(); });
+  });
+
+  root.querySelectorAll("[data-day]").forEach(function(b){
+    b.addEventListener("click",function(){ state.day=Number(b.dataset.day); state.draft={}; render(); });
+  });
+
+  root.querySelectorAll("[data-load]").forEach(function(inp){
+    inp.addEventListener("input",function(){
+      var d=draftFor(inp.dataset.load), slot=inp.dataset.slot;
+      d[slot]=Object.assign({},d[slot],{load:inp.value});
+      if(slot==="s2") d.s2dirty=true;
+      if(slot==="s1") refreshSet2(inp.dataset.load);
+    });
+  });
+
+  root.querySelectorAll("[data-reps]").forEach(function(inp){
+    inp.addEventListener("input",function(){
+      var key=inp.dataset.reps, slot=inp.dataset.slot, side=inp.dataset.side;
+      var d=draftFor(key), patch={};
+      if(side==="L") patch.repsL=inp.value; else if(side==="R") patch.repsR=inp.value; else patch.reps=inp.value;
+      d[slot]=Object.assign({},d[slot],patch);
+      if(slot==="s1") refreshSet2(key);
+    });
+  });
+
+  root.querySelectorAll("[data-rest]").forEach(function(b){
+    b.addEventListener("click",function(){ startTimer(Number(b.dataset.rest)); });
+  });
+
+  root.querySelectorAll("[data-step]").forEach(function(b){
+    b.addEventListener("click",function(){
+      var m=moveById(b.dataset.step), dir=Number(b.dataset.dir);
+      var v=Math.max(minLoad(m), startFor(m)+dir*m.incr);
+      state.data.starts[m.key]=v; persist(); render(); state.tab="settings";
+    });
+  });
+
+  var bw=root.querySelector("#bwInput");   if(bw) bw.addEventListener("input",function(){ state.bw=bw.value; });
+  var nt=root.querySelector("#notesInput");if(nt) nt.addEventListener("input",function(){ state.notes=nt.value; });
+  var lb=root.querySelector("#logBtn");    if(lb) lb.addEventListener("click",logSession);
+
+  root.querySelectorAll("[data-del]").forEach(function(b){
+    b.addEventListener("click",function(){ deleteSession(Number(b.dataset.del)); });
+  });
+
+  var rb=root.querySelector("#resetBtn"); if(rb) rb.addEventListener("click",resetAll);
+  var eb=root.querySelector("#exportBtn");if(eb) eb.addEventListener("click",exportData);
+  var ib=root.querySelector("#importBtn");if(ib) ib.addEventListener("click",function(){ document.getElementById("importFile").click(); });
+}
+
+/* Update just the set-2 load field, without re-rendering (keeps focus). */
+function refreshSet2(key){
+  var m=moveById(key), d=draftFor(key);
+  if(d.s2dirty) return;
+  var el=document.querySelector("[data-load='"+key+"'][data-slot='s2']");
+  if(!el) return;
+  var v=set2Load(m,currentDayN());
+  el.value=isNaN(v)?"":v;
+  var l1=set1Load(m,currentDayN());
+  var wrap=el.closest(".lt-move");
+  if(wrap){
+    var ar=wrap.querySelector(".lt-arrow");
+    if(ar) ar.innerHTML="Set 1 result &rarr; "+(v>l1?"<b>&uarr; up "+m.incr+"</b>":v<l1?"<b>&darr; down "+m.incr+"</b>":"same load")+" for set 2";
+  }
+}
+
+/* ---------------- rest timer ---------------- */
+
+function startTimer(sec){
+  clearInterval(timer.id);
+  timer.left=sec;
+  document.getElementById("timer").classList.add("is-on");
+  paintTimer();
+  timer.id=setInterval(function(){
+    timer.left--;
+    if(timer.left<=0){ stopTimer(); toast("Rest done &mdash; next set."); return; }
+    paintTimer();
+  },1000);
+}
+function paintTimer(){
+  var m=Math.floor(timer.left/60), s=timer.left%60;
+  document.getElementById("timerNum").textContent=m+":"+String(s).padStart(2,"0");
+}
+function stopTimer(){
+  clearInterval(timer.id); timer.id=null;
+  document.getElementById("timer").classList.remove("is-on");
+}
+document.getElementById("timerX").addEventListener("click",stopTimer);
+
+/* ---------------- log / data ---------------- */
+
+function logSession(){
+  var t=dayByN(currentDayN());
+  var moves={}, any=false;
+  t.moves.forEach(function(m){
+    var d=draftFor(m.key);
+    var s1={load:set1Load(m,t.n)}, s2={load:set2Load(m,t.n)};
+    if(m.uni){
+      s1.repsL=d.s1.repsL||""; s1.repsR=d.s1.repsR||"";
+      s2.repsL=d.s2.repsL||""; s2.repsR=d.s2.repsR||"";
+      if(s1.repsL||s1.repsR||s2.repsL||s2.repsR) any=true;
+    }else{
+      s1.reps=d.s1.reps||""; s2.reps=d.s2.reps||"";
+      if(s1.reps||s2.reps) any=true;
+    }
+    moves[m.key]={s1:s1,s2:s2};
+  });
+  if(!any){ toast("Log some reps first."); return; }
+
+  state.data.sessions.unshift({
+    id:Date.now(), date:today(), day:t.n, bw:state.bw, notes:state.notes, moves:moves
+  });
+  persist();
+  state.draft={}; state.notes=""; state.day=null;
+  render();
+  toast("Day "+t.n+" logged. Next up: Day "+autoDay()+".");
+}
+
+function deleteSession(id){
+  state.data.sessions=state.data.sessions.filter(function(s){return s.id!==id;});
+  persist(); render();
+}
+
+function resetAll(){
+  if(window.confirm("Erase all logged sessions? This can&#39;t be undone.")){
+    state.data.sessions=[]; persist(); render();
+  }
+}
+
+function exportData(){
+  var blob=new Blob([JSON.stringify(state.data,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="lift-tracker-"+today()+".json";
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+}
+
+document.getElementById("importFile").addEventListener("change",function(ev){
+  var f=ev.target.files&&ev.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var d=JSON.parse(r.result);
+      if(!d.sessions) throw new Error("bad file");
+      state.data=d;
+      if(!state.data.starts) state.data.starts={};
+      persist(); render(); toast("Imported "+d.sessions.length+" sessions.");
+    }catch(e){ toast("That file didn&#39;t look like a Lift Tracker backup."); }
+  };
+  r.readAsText(f);
+  ev.target.value="";
+});
+
+/* ---------------- boot ---------------- */
+
+load();
+render();
+
+if("serviceWorker" in navigator){
+  window.addEventListener("load",function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); });
+}
+})();
+</script>
+</body>
+</html>
