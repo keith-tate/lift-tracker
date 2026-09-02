@@ -173,27 +173,27 @@ var PROGRAM = [
       {key:"csrow",     name:"Chest-Supported DB Row",      pattern:"Horiz pull", plane:"sagittal",   uni:false, incr:5,  start:45, cue:"Chest stays on the pad — no body english. Drive elbows back, pause 1 sec.", perHand:true},
       {key:"latlunge",  name:"Goblet Lateral Lunge",        pattern:"Squat",      plane:"frontal",    uni:true,  incr:5,  start:35, cue:"Push straight sideways, trail leg locked. Load the working hip, not the knee."},
       {key:"lmpress",   name:"Half-Kneeling Landmine Press",pattern:"Vert push",  plane:"transverse", uni:true,  incr:5,  start:25, cue:"Angled press = overhead without the impingement. Down knee same side as the pressing arm; ribs down."},
-      {key:"chop",      name:"Half-Kneeling Cable Chop",    pattern:"Rotation",   plane:"transverse", uni:true,  incr:10, start:30, cue:"High to low. Rotate through the ribcage, hips quiet. Control the return."}
+      {key:"chop",      name:"Half-Kneeling Cable Chop",    pattern:"Rotation",   plane:"transverse", uni:true,  incr:5 , start:30, cue:"High to low. Rotate through the ribcage, hips quiet. Control the return."}
     ]
   },
   {
     n:2, dow:"Wed", title:"Hinge + Vertical",
-    blurb:"Trap-bar hinge as the main lift, both vertical patterns, a unilateral squat, and anti-rotation work to close.",
+    blurb:"Loaded hip extension as the main lift, both vertical patterns, a unilateral squat, and anti-rotation work to close.",
     warmup:[
       "Bike or row — 5 min easy",
       "Cat-cow — 8",
       "Dead bug — 8/side",
       "Hip airplane — 5/side",
       "Band face pull — 15",
-      "Trap-bar ramp sets — 5 @ ~50%, 3 @ ~75%"
+      "Hip thrust ramp set — 8 @ ~50%"
     ],
     moves:[
-      {key:"trapdl",    name:"Trap-Bar Deadlift",           pattern:"Hinge",      plane:"sagittal",   uni:false, incr:5,  start:155, cue:"Back history: stay ramped and honest. Hips back, lats on, push the floor away. Stop the set if the low back rounds."},
+      {key:"hipthrust", name:"Hip Thrust Machine",          pattern:"Hinge",      plane:"sagittal",   uni:false, incr:5,  start:160, cue:"Chin tucked, ribs down, drive through the heels and pause 1 sec at lockout. Near-zero spinal load — the back-friendly way to load hip extension hard."},
       {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:10, start:100, cue:"Assisted chin-up works here too. Chest up, drive elbows to the pockets."},
       {key:"dbohp",     name:"Seated DB Neutral-Grip Press",pattern:"Vert push",  plane:"sagittal",   uni:false, incr:5,  start:30,  cue:"Palms facing throughout. If the shoulder complains, drop to a 30 deg incline instead of pressing through it.", perHand:true},
       {key:"bulgarian", name:"Bulgarian Split Squat",       pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:30,  cue:"Front shin slightly forward, torso a touch inclined. If the knee gets cranky, swap to a reverse lunge and note it.", perHand:true},
-      {key:"cablerow1", name:"1-Arm Cable Row, Split Stance",pattern:"Horiz pull",plane:"transverse", uni:true,  incr:10, start:50,  cue:"Let the torso rotate open on the stretch, then pull square. Anti-rotation on the way back."},
-      {key:"pallof",    name:"Pallof Press",                pattern:"Anti-rotation",plane:"transverse",uni:true, incr:10, start:30,  cue:"Reps = slow 3-sec presses. Resist the pull; nothing rotates."}
+      {key:"cablerow1", name:"1-Arm Cable Row, Split Stance",pattern:"Horiz pull",plane:"transverse", uni:true,  incr:5 , start:50,  cue:"Let the torso rotate open on the stretch, then pull square. Anti-rotation on the way back."},
+      {key:"pallof",    name:"Pallof Press",                pattern:"Anti-rotation",plane:"transverse",uni:true, incr:5 , start:30,  cue:"Reps = slow 3-sec presses. Resist the pull; nothing rotates."}
     ]
   },
   {
@@ -213,14 +213,14 @@ var PROGRAM = [
       {key:"dbbench1",  name:"1-Arm DB Bench Press",        pattern:"Horiz push", plane:"transverse", uni:true,  incr:5,  start:45, cue:"One dumbbell only — the trunk fights the rotation. Glutes tight, hips level."},
       {key:"kbbup",     name:"KB Bottoms-Up Press, Half-Kneeling",pattern:"Vert push",plane:"transverse",uni:true,incr:5,start:20, cue:"Bell inverted, crush the handle. Stops well short of the loads that bother your shoulder — that is the point."},
       {key:"chinup",    name:"Chin-Up (or 1-Arm Pulldown)", pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:0,  bw:true, cue:"Load = added weight. At 0 and still under 7 reps, use band or machine assist and log the reps you get."},
-      {key:"rotrow",    name:"Cable Rotational Row",        pattern:"Rotation",   plane:"transverse", uni:true,  incr:10, start:40, cue:"Rotate away, then pull and rotate through. Hips lead, arms finish."}
+      {key:"rotrow",    name:"Cable Rotational Row",        pattern:"Rotation",   plane:"transverse", uni:true,  incr:5 , start:40, cue:"Rotate away, then pull and rotate through. Hips lead, arms finish."}
     ]
   }
 ];
 
 var COVERAGE = [
   ["Squat",        "Zercher (D1) &middot; lateral lunge (D1) &middot; Bulgarian (D2) &middot; reverse lunge (D3)"],
-  ["Hinge",        "Trap-bar deadlift (D2) &middot; single-leg RDL (D3)"],
+  ["Hinge",        "Hip thrust machine (D2) &middot; single-leg RDL (D3)"],
   ["Horiz push",   "DB bench (D1) &middot; 1-arm DB bench (D3)"],
   ["Vert push",    "Landmine (D1) &middot; seated DB neutral (D2) &middot; KB bottoms-up (D3)"],
   ["Horiz pull",   "Chest-supported row (D1) &middot; 1-arm cable row (D2) &middot; rotational row (D3)"],
@@ -507,7 +507,7 @@ function setSummary(set,m){
 function programHTML(){
   var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90-120 sec rest. Every set is autoregulated: "+
         "<b>6 or fewer &rarr; drop</b>, <b>7-9 &rarr; repeat</b>, <b>10+ &rarr; add</b>. Barbell moves step 5 lb total (2.5/side), "+
-        "dumbbells 5 lb per hand, cable stacks 10 lb.</p>";
+        "dumbbells 5 lb per hand, cable stacks 5 lb.</p>";
   PROGRAM.forEach(function(d){
     h+="<div class='lt-sect'>"+d.dow+" &middot; Day "+d.n+" &mdash; "+d.title+"</div><div class='lt-prog-day'>"+
        d.moves.map(function(m,i){

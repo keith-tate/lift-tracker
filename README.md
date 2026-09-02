@@ -11,7 +11,7 @@ Two hard sets per movement, six movements per day, ~60 minutes, 90–120 sec res
 | Day | Theme | Movements |
 | --- | --- | --- |
 | 1 (Mon) | Squat + Horizontal | Zercher squat · DB bench (neutral) · chest-supported DB row · goblet lateral lunge · half-kneeling landmine press · half-kneeling cable chop |
-| 2 (Wed) | Hinge + Vertical | Trap-bar deadlift · neutral-grip pulldown · seated DB neutral press · Bulgarian split squat · 1-arm cable row · Pallof press |
+| 2 (Wed) | Hinge + Vertical | Hip thrust machine · neutral-grip pulldown · seated DB neutral press · Bulgarian split squat · 1-arm cable row · Pallof press |
 | 3 (Fri) | Unilateral + Rotation | Single-leg RDL · DB reverse lunge · 1-arm DB bench · KB bottoms-up press · chin-up · cable rotational row |
 
 Every major pattern is covered across the week — squat, hinge, horizontal push/pull,
@@ -31,8 +31,8 @@ The rule is applied to **every set individually**:
 - **10+ reps** → add one increment
 
 Set 2's load is computed live from set 1's result. The next session's set 1 opens at set 2's
-load, adjusted by set 2's reps. Increments: barbell 5 lb total (2.5/side), dumbbells 5 lb per
-hand, cable stacks 10 lb.
+load, adjusted by set 2's reps. Increments: barbell and plate-loaded machines 5 lb total (2.5/side), dumbbells 5 lb per
+hand, functional-trainer cables 5 lb, lat pulldown 10 lb.
 
 On unilateral movements the **weaker side governs** — log both sides, the lower rep count
 drives the load, and the strong side stops at the weak side's reps.
