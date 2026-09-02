@@ -31,8 +31,8 @@ The rule is applied to **every set individually**:
 - **10+ reps** → add one increment
 
 Set 2's load is computed live from set 1's result. The next session's set 1 opens at set 2's
-load, adjusted by set 2's reps. Increments: barbell and plate-loaded machines 5 lb total (2.5/side), dumbbells 5 lb per
-hand, functional-trainer cables 5 lb, lat pulldown 10 lb.
+load, adjusted by set 2's reps. Increments: barbell 5 lb total (2.5/side), dumbbells 5 lb per hand, cable stacks 5 lb, and
+the plate-loaded hip thrust machine 10 lb (5/side).
 
 On unilateral movements the **weaker side governs** — log both sides, the lower rep count
 drives the load, and the strong side stops at the weak side's reps.

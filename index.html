@@ -188,8 +188,8 @@ var PROGRAM = [
       "Hip thrust ramp set — 8 @ ~50%"
     ],
     moves:[
-      {key:"hipthrust", name:"Hip Thrust Machine",          pattern:"Hinge",      plane:"sagittal",   uni:false, incr:5,  start:160, cue:"Chin tucked, ribs down, drive through the heels and pause 1 sec at lockout. Near-zero spinal load — the back-friendly way to load hip extension hard."},
-      {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:10, start:100, cue:"Assisted chin-up works here too. Chest up, drive elbows to the pockets."},
+      {key:"hipthrust", name:"Hip Thrust Machine",          pattern:"Hinge",      plane:"sagittal",   uni:false, incr:10, start:270, cue:"Chin tucked, ribs down, drive through the heels and pause 1 sec at lockout. Near-zero spinal load — the back-friendly way to load hip extension hard."},
+      {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:100, cue:"Assisted chin-up works here too. Chest up, drive elbows to the pockets."},
       {key:"dbohp",     name:"Seated DB Neutral-Grip Press",pattern:"Vert push",  plane:"sagittal",   uni:false, incr:5,  start:30,  cue:"Palms facing throughout. If the shoulder complains, drop to a 30 deg incline instead of pressing through it.", perHand:true},
       {key:"bulgarian", name:"Bulgarian Split Squat",       pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:30,  cue:"Front shin slightly forward, torso a touch inclined. If the knee gets cranky, swap to a reverse lunge and note it.", perHand:true},
       {key:"cablerow1", name:"1-Arm Cable Row, Split Stance",pattern:"Horiz pull",plane:"transverse", uni:true,  incr:5 , start:50,  cue:"Let the torso rotate open on the stretch, then pull square. Anti-rotation on the way back."},
@@ -507,7 +507,7 @@ function setSummary(set,m){
 function programHTML(){
   var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90-120 sec rest. Every set is autoregulated: "+
         "<b>6 or fewer &rarr; drop</b>, <b>7-9 &rarr; repeat</b>, <b>10+ &rarr; add</b>. Barbell moves step 5 lb total (2.5/side), "+
-        "dumbbells 5 lb per hand, cable stacks 5 lb.</p>";
+        "dumbbells 5 lb per hand, cable stacks 5 lb, the plate-loaded hip thrust 10 lb (5/side).</p>";
   PROGRAM.forEach(function(d){
     h+="<div class='lt-sect'>"+d.dow+" &middot; Day "+d.n+" &mdash; "+d.title+"</div><div class='lt-prog-day'>"+
        d.moves.map(function(m,i){
