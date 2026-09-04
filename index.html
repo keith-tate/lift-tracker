@@ -134,7 +134,7 @@ html,body{margin:0;background:var(--bg)}
 <div id="root" class="lt-root"></div>
 <div id="timer" class="lt-timer">
   <span class="lt-timer-lbl">Rest</span>
-  <span id="timerNum" class="lt-timer-num">2:00</span>
+  <span id="timerNum" class="lt-timer-num">1:30</span>
   <button id="timerX" class="lt-timer-x">Stop</button>
 </div>
 <input type="file" id="importFile" accept="application/json" style="display:none">
@@ -189,7 +189,7 @@ var PROGRAM = [
     ],
     moves:[
       {key:"hipthrust", name:"Hip Thrust Machine",          pattern:"Hinge",      plane:"sagittal",   uni:false, incr:10, start:270, cue:"Chin tucked, ribs down, drive through the heels and pause 1 sec at lockout. Near-zero spinal load — the back-friendly way to load hip extension hard."},
-      {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:100, cue:"Assisted chin-up works here too. Chest up, drive elbows to the pockets."},
+      {key:"pulldown",  name:"Neutral-Grip Lat Pulldown",   pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:100, cue:"Neutral or overhand only &mdash; a supinated grip aggravates the golfer&#39;s elbow. Chest up, drive elbows to the pockets."},
       {key:"dbohp",     name:"Seated DB Neutral-Grip Press",pattern:"Vert push",  plane:"sagittal",   uni:false, incr:5,  start:30,  cue:"Palms facing throughout. If the shoulder complains, drop to a 30 deg incline instead of pressing through it.", perHand:true},
       {key:"bulgarian", name:"Bulgarian Split Squat",       pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:30,  cue:"Front shin slightly forward, torso a touch inclined. If the knee gets cranky, swap to a reverse lunge and note it.", perHand:true},
       {key:"cablerow1", name:"1-Arm Cable Row, Split Stance",pattern:"Horiz pull",plane:"transverse", uni:true,  incr:5 , start:50,  cue:"Let the torso rotate open on the stretch, then pull square. Anti-rotation on the way back."},
@@ -208,24 +208,32 @@ var PROGRAM = [
       "KB halo — 6/direction"
     ],
     moves:[
-      {key:"slrdl",     name:"Single-Leg RDL",              pattern:"Hinge",      plane:"transverse", uni:true,  incr:5,  start:30, cue:"Hips square — the frontal/transverse control IS the exercise. Light and clean beats heavy and wobbly.", perHand:true},
+      {key:"ksrdl",     name:"Kickstand RDL",               pattern:"Hinge",      plane:"sagittal",   uni:true,  incr:5,  start:30, cue:"Back toes on the floor as a kickstand — all the load on the front leg, balance off the table. Hips square, hinge back, feel the front hamstring.", perHand:true},
       {key:"revlunge",  name:"DB Reverse Lunge",            pattern:"Squat",      plane:"sagittal",   uni:true,  incr:5,  start:35, cue:"Step back, drop straight down, drive through the front heel. Knee-friendlier than a forward lunge.", perHand:true},
-      {key:"dbbench1",  name:"1-Arm DB Bench Press",        pattern:"Horiz push", plane:"transverse", uni:true,  incr:5,  start:45, cue:"One dumbbell only — the trunk fights the rotation. Glutes tight, hips level."},
+      {key:"floorpr1",  name:"1-Arm DB Floor Press",        pattern:"Horiz push", plane:"transverse", uni:true,  incr:5,  start:45, cue:"One dumbbell, back on the floor. Triceps stop the rep before the shoulder gets deep — the trunk still fights the rotation. Glutes tight, hips level."},
       {key:"kbbup",     name:"KB Bottoms-Up Press, Half-Kneeling",pattern:"Vert push",plane:"transverse",uni:true,incr:5,start:20, cue:"Bell inverted, crush the handle. Stops well short of the loads that bother your shoulder — that is the point."},
-      {key:"chinup",    name:"Chin-Up (or 1-Arm Pulldown)", pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:0,  bw:true, cue:"Load = added weight. At 0 and still under 7 reps, use band or machine assist and log the reps you get."},
+      {key:"pullup",    name:"Pull-Up, Pronated",           pattern:"Vert pull",  plane:"sagittal",   uni:false, incr:5,  start:0,  bw:true, cue:"Overhand, hands just outside the shoulders — no supinated grip, it lights up the golfer&#39;s elbow. Load = added weight. At 0 and still under 7 reps, use band or machine assist and log the reps you get."},
       {key:"rotrow",    name:"Cable Rotational Row",        pattern:"Rotation",   plane:"transverse", uni:true,  incr:5 , start:40, cue:"Rotate away, then pull and rotate through. Hips lead, arms finish."}
     ]
   }
 ];
 
+/* Movements that have been swapped out of the program. Kept only so their old
+   sessions still render in History. */
+var RETIRED = {
+  slrdl:{key:"slrdl", name:"Single-Leg RDL (retired)", uni:true, perHand:true},
+  dbbench1:{key:"dbbench1", name:"1-Arm DB Bench Press (retired)", uni:true},
+  chinup:{key:"chinup", name:"Chin-Up (retired)", uni:false}
+};
+
 var COVERAGE = [
   ["Squat",        "Zercher (D1) &middot; lateral lunge (D1) &middot; Bulgarian (D2) &middot; reverse lunge (D3)"],
-  ["Hinge",        "Hip thrust machine (D2) &middot; single-leg RDL (D3)"],
-  ["Horiz push",   "DB bench (D1) &middot; 1-arm DB bench (D3)"],
+  ["Hinge",        "Hip thrust machine (D2) &middot; kickstand RDL (D3)"],
+  ["Horiz push",   "DB bench (D1) &middot; 1-arm DB floor press (D3)"],
   ["Vert push",    "Landmine (D1) &middot; seated DB neutral (D2) &middot; KB bottoms-up (D3)"],
   ["Horiz pull",   "Chest-supported row (D1) &middot; 1-arm cable row (D2) &middot; rotational row (D3)"],
-  ["Vert pull",    "Pulldown / chin (D2) &middot; chin-up (D3)"],
-  ["Frontal",      "Lateral lunge, Pallof, single-leg RDL, 1-arm carries of load"],
+  ["Vert pull",    "Neutral-grip pulldown (D2) &middot; pronated pull-up (D3)"],
+  ["Frontal",      "Lateral lunge, Bulgarian split squat, 1-arm carries of load"],
   ["Transverse",   "Cable chop, Pallof, rotational row, 1-arm press and row"]
 ];
 
@@ -240,7 +248,8 @@ var state = {
   data:{ sessions:[], starts:{} }
 };
 
-var timer = { id:null, left:0 };
+var REST_SEC = 90;
+var timer = { id:null, left:0, forSet:null };
 
 /* ---------------- helpers ---------------- */
 
@@ -444,7 +453,7 @@ function todayHTML(t){
     h+=setRowHTML(m,"s1","Set 1",l1,false);
     h+="<p class='lt-arrow'>Set 1 result &rarr; "+arrow+" for set 2</p>";
     h+=setRowHTML(m,"s2","Set 2",l2,!d.s2dirty);
-    h+="<button class='lt-rest' data-rest='120'>Rest 2:00</button>";
+    h+="<button class='lt-rest' data-rest='"+REST_SEC+"'>Rest 1:30</button>";
     h+="</div>";
   });
 
@@ -468,10 +477,10 @@ function setRowHTML(m,slot,label,loadVal,isAuto){
     h+="<label class='lt-field'><span>Reps L</span><input class='lt-input' type='number' inputmode='numeric' "+
        "data-reps='"+m.key+"' data-slot='"+slot+"' data-side='L' value='"+esc(s.repsL||"")+"'></label>";
     h+="<label class='lt-field'><span>Reps R</span><input class='lt-input' type='number' inputmode='numeric' "+
-       "data-reps='"+m.key+"' data-slot='"+slot+"' data-side='R' value='"+esc(s.repsR||"")+"'></label>";
+       "data-reps='"+m.key+"' data-slot='"+slot+"' data-side='R' data-last='1' value='"+esc(s.repsR||"")+"'></label>";
   }else{
     h+="<label class='lt-field'><span>Reps</span><input class='lt-input' type='number' inputmode='numeric' "+
-       "data-reps='"+m.key+"' data-slot='"+slot+"' value='"+esc(s.reps||"")+"'></label>";
+       "data-reps='"+m.key+"' data-slot='"+slot+"' data-last='1' value='"+esc(s.reps||"")+"'></label>";
   }
   h+="</div>";
   return h;
@@ -482,9 +491,18 @@ function historyHTML(){
   if(!ss.length) return "<p class='lt-empty'>No sessions logged yet. Finish Day 1 and it will show up here.</p>";
   return ss.map(function(s){
     var d=dayByN(s.day);
+    var shown={};
     var rows=d.moves.map(function(m){
       var e=s.moves[m.key]; if(!e) return "";
+      shown[m.key]=true;
       return "<div class='lt-hist-row'><span>"+m.name+"</span><span class='lt-hist-val'>"+
+             setSummary(e.s1,m)+" &nbsp;/&nbsp; "+setSummary(e.s2,m)+"</span></div>";
+    }).join("");
+    rows+=Object.keys(s.moves||{}).map(function(k){
+      if(shown[k]) return "";
+      var m=RETIRED[k]||{name:k, uni:true};
+      var e=s.moves[k];
+      return "<div class='lt-hist-row'><span>"+esc(m.name)+"</span><span class='lt-hist-val'>"+
              setSummary(e.s1,m)+" &nbsp;/&nbsp; "+setSummary(e.s2,m)+"</span></div>";
     }).join("");
     return "<details class='lt-hist'><summary>"+
@@ -505,7 +523,7 @@ function setSummary(set,m){
 }
 
 function programHTML(){
-  var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90-120 sec rest. Every set is autoregulated: "+
+  var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90 sec rest between sets. Every set is autoregulated: "+
         "<b>6 or fewer &rarr; drop</b>, <b>7-9 &rarr; repeat</b>, <b>10+ &rarr; add</b>. Barbell moves step 5 lb total (2.5/side), "+
         "dumbbells 5 lb per hand, cable stacks 5 lb, the plate-loaded hip thrust 10 lb (5/side).</p>";
   PROGRAM.forEach(function(d){
@@ -541,7 +559,12 @@ function settingsHTML(){
      "<button class='lt-ghost' id='exportBtn'>Export</button>"+
      "<button class='lt-ghost' id='importBtn'>Import</button></div>"+
      "<button class='lt-reset' id='resetBtn'>Erase all sessions</button>"+
-     "<p class='lt-fine'>Everything lives in this device&#39;s local storage. Export writes a JSON backup.</p>";
+     "<p class='lt-fine'>Everything lives in this device&#39;s local storage. Export writes a JSON backup.</p>"+
+     "<div class='lt-sect'>Screen</div><p class='lt-fine'>"+
+     (wakeSupported()
+       ? "The screen is held awake while the app is open, so a rest timer never dies to a locked phone. It lets go as soon as you switch away."
+       : "This browser has no screen wake lock &mdash; the phone may sleep mid-rest. Add the app to the home screen, or bump the auto-lock time in iOS Settings &rarr; Display &amp; Brightness.")+
+     "</p>";
   return h;
 }
 
@@ -575,10 +598,14 @@ function bind(){
       d[slot]=Object.assign({},d[slot],patch);
       if(slot==="s1") refreshSet2(key);
     });
+    if(inp.dataset.last){
+      /* "change" fires when the field commits - the keyboard's check mark, Enter, or blur. */
+      inp.addEventListener("change",function(){ autoRest(inp.dataset.reps+":"+inp.dataset.slot,inp.value); });
+    }
   });
 
   root.querySelectorAll("[data-rest]").forEach(function(b){
-    b.addEventListener("click",function(){ startTimer(Number(b.dataset.rest)); });
+    b.addEventListener("click",function(){ primeAudio(); startTimer(Number(b.dataset.rest)); });
   });
 
   root.querySelectorAll("[data-step]").forEach(function(b){
@@ -618,16 +645,82 @@ function refreshSet2(key){
   }
 }
 
+/* ---------------- screen wake lock ---------------- */
+
+/* Keeps the phone awake while the app is in the foreground, so a rest timer is never
+   killed by the screen locking. The browser drops the lock whenever the page is hidden,
+   so it is re-taken every time the app comes back into view. */
+var wakeLock = null;
+
+function wakeSupported(){ return "wakeLock" in navigator; }
+
+function requestWake(){
+  if(!wakeSupported() || wakeLock || document.visibilityState !== "visible") return;
+  navigator.wakeLock.request("screen").then(function(l){
+    wakeLock = l;
+    l.addEventListener("release", function(){ wakeLock = null; });
+  }).catch(function(){ wakeLock = null; });
+}
+
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "visible") requestWake();
+});
+
+/* ---------------- chime ---------------- */
+
+/* Synthesized so the app stays a single file with nothing to fetch offline.
+   iOS keeps the audio context suspended until a real user gesture, so every tap
+   and field commit gives it a chance to wake up. */
+var audio = null;
+
+function primeAudio(){
+  try{
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if(!AC) return;
+    if(!audio) audio = new AC();
+    if(audio.state === "suspended") audio.resume();
+  }catch(e){ audio = null; }
+}
+
+function chime(){
+  primeAudio();
+  if(!audio || audio.state !== "running") return;
+  /* Two struck partials, a fifth apart, each ringing down - reads as a bell, not a beep. */
+  [[880, 0], [1320, 0.09]].forEach(function(v){
+    var t = audio.currentTime + v[1];
+    var osc = audio.createOscillator(), g = audio.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(v[0], t);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.32, t + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
+    osc.connect(g); g.connect(audio.destination);
+    osc.start(t); osc.stop(t + 1.6);
+  });
+}
+
 /* ---------------- rest timer ---------------- */
+
+/* Logging the last rep count of a set starts the rest clock on its own. Re-editing the
+   same set while that clock is already running leaves it alone. */
+function autoRest(setId,val){
+  primeAudio();
+  var n=num(val);
+  if(isNaN(n)||n<=0) return;
+  if(timer.id && timer.forSet===setId) return;
+  startTimer(REST_SEC);
+  timer.forSet=setId;
+}
 
 function startTimer(sec){
   clearInterval(timer.id);
+  timer.forSet=null;
   timer.left=sec;
   document.getElementById("timer").classList.add("is-on");
   paintTimer();
   timer.id=setInterval(function(){
     timer.left--;
-    if(timer.left<=0){ stopTimer(); toast("Rest done &mdash; next set."); return; }
+    if(timer.left<=0){ stopTimer(); chime(); toast("Rest done &mdash; next set."); return; }
     paintTimer();
   },1000);
 }
@@ -636,10 +729,12 @@ function paintTimer(){
   document.getElementById("timerNum").textContent=m+":"+String(s).padStart(2,"0");
 }
 function stopTimer(){
-  clearInterval(timer.id); timer.id=null;
+  clearInterval(timer.id); timer.id=null; timer.forSet=null;
   document.getElementById("timer").classList.remove("is-on");
 }
 document.getElementById("timerX").addEventListener("click",stopTimer);
+document.addEventListener("pointerdown",function(){ primeAudio(); requestWake(); },{once:false,passive:true});
+requestWake();
 
 /* ---------------- log / data ---------------- */
 
