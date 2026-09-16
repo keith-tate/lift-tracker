@@ -10,7 +10,7 @@ Two hard sets per movement, six movements per day, ~60 minutes, 90 sec rest betw
 
 | Day | Theme | Movements |
 | --- | --- | --- |
-| 1 (Mon) | Squat + Horizontal | Zercher squat · DB bench (neutral) · chest-supported DB row · goblet lateral lunge · half-kneeling landmine press · half-kneeling cable chop |
+| 1 (Mon) | Squat + Horizontal | Belt squat · DB bench (neutral) · chest-supported DB row · goblet lateral lunge · half-kneeling landmine press · half-kneeling cable chop |
 | 2 (Wed) | Hinge + Vertical | Hip thrust machine · neutral-grip pulldown · seated DB neutral press · Bulgarian split squat · 1-arm cable row · Pallof press |
 | 3 (Fri) | Unilateral + Rotation | Kickstand RDL · DB reverse lunge · 1-arm DB floor press · KB bottoms-up press · pronated pull-up · cable rotational row |
 
@@ -18,9 +18,9 @@ Every major pattern is covered across the week — squat, hinge, horizontal push
 vertical push/pull — and every day includes frontal- and transverse-plane work rather than
 living in the sagittal plane.
 
-Constraints baked in: no barbell back squat, no front squat (Zercher instead), and no
-barbell strict press — overhead work is landmine, neutral-grip dumbbell, and bottoms-up
-kettlebell only.
+Constraints baked in: no barbell back squat and no front squat — the main squat is a belt
+squat, which loads the pattern with nothing on the spine — and no barbell strict press;
+overhead work is landmine, neutral-grip dumbbell, and bottoms-up kettlebell only.
 
 Golfer's elbow rules out supinated grips, so vertical pulling is pronated (pull-up) or
 neutral (lat pulldown) only — no chin-ups.
@@ -35,7 +35,7 @@ The rule is applied to **every set individually**:
 
 Set 2's load is computed live from set 1's result. The next session's set 1 opens at set 2's
 load, adjusted by set 2's reps. Increments: barbell 5 lb total (2.5/side), dumbbells 5 lb per hand, cable stacks 5 lb, and
-the plate-loaded hip thrust machine 10 lb (5/side).
+the plate-loaded belt squat and hip thrust machines 10 lb (5/side).
 
 On unilateral movements the **weaker side governs** — log both sides, the lower rep count
 drives the load, and the strong side stops at the weak side's reps.
