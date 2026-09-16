@@ -165,10 +165,10 @@ var PROGRAM = [
       "World&#39;s greatest stretch — 5/side",
       "Banded pull-apart — 15",
       "Glute bridge — 12",
-      "Empty-bar Zercher hold — 20 sec"
+      "Belt squat ramp set — 8 @ ~50%"
     ],
     moves:[
-      {key:"zercher",   name:"Zercher Squat",              pattern:"Squat",      plane:"sagittal",   uni:false, incr:5,  start:95, cue:"Bar in the elbow crooks, ribs down, sit between the hips. Torso stays tall — no forward dump."},
+      {key:"beltsquat", name:"Belt Squat",                  pattern:"Squat",      plane:"sagittal",   uni:false, incr:10, start:140, cue:"Belt low on the hips, load hanging between the legs. Nothing on the spine and no grip limit, so sit down between the hips and let the legs be what stops the set."},
       {key:"dbbench",   name:"DB Bench Press, Neutral Grip",pattern:"Horiz push", plane:"sagittal",   uni:false, incr:5,  start:45, cue:"Palms facing, elbows ~45 deg. Neutral grip keeps the shoulder out of the painful arc.", perHand:true},
       {key:"csrow",     name:"Chest-Supported DB Row",      pattern:"Horiz pull", plane:"sagittal",   uni:false, incr:5,  start:45, cue:"Chest stays on the pad — no body english. Drive elbows back, pause 1 sec.", perHand:true},
       {key:"latlunge",  name:"Goblet Lateral Lunge",        pattern:"Squat",      plane:"frontal",    uni:true,  incr:5,  start:35, cue:"Push straight sideways, trail leg locked. Load the working hip, not the knee."},
@@ -223,11 +223,12 @@ var PROGRAM = [
 var RETIRED = {
   slrdl:{key:"slrdl", name:"Single-Leg RDL (retired)", uni:true, perHand:true},
   dbbench1:{key:"dbbench1", name:"1-Arm DB Bench Press (retired)", uni:true},
-  chinup:{key:"chinup", name:"Chin-Up (retired)", uni:false}
+  chinup:{key:"chinup", name:"Chin-Up (retired)", uni:false},
+  zercher:{key:"zercher", name:"Zercher Squat (retired)", uni:false}
 };
 
 var COVERAGE = [
-  ["Squat",        "Zercher (D1) &middot; lateral lunge (D1) &middot; Bulgarian (D2) &middot; reverse lunge (D3)"],
+  ["Squat",        "Belt squat (D1) &middot; lateral lunge (D1) &middot; Bulgarian (D2) &middot; reverse lunge (D3)"],
   ["Hinge",        "Hip thrust machine (D2) &middot; kickstand RDL (D3)"],
   ["Horiz push",   "DB bench (D1) &middot; 1-arm DB floor press (D3)"],
   ["Vert push",    "Landmine (D1) &middot; seated DB neutral (D2) &middot; KB bottoms-up (D3)"],
@@ -525,7 +526,7 @@ function setSummary(set,m){
 function programHTML(){
   var h="<p class='lt-blurb'>Two hard sets per movement, roughly 60 minutes, 90 sec rest between sets. Every set is autoregulated: "+
         "<b>6 or fewer &rarr; drop</b>, <b>7-9 &rarr; repeat</b>, <b>10+ &rarr; add</b>. Barbell moves step 5 lb total (2.5/side), "+
-        "dumbbells 5 lb per hand, cable stacks 5 lb, the plate-loaded hip thrust 10 lb (5/side).</p>";
+        "dumbbells 5 lb per hand, cable stacks 5 lb, the plate-loaded belt squat and hip thrust 10 lb (5/side).</p>";
   PROGRAM.forEach(function(d){
     h+="<div class='lt-sect'>"+d.dow+" &middot; Day "+d.n+" &mdash; "+d.title+"</div><div class='lt-prog-day'>"+
        d.moves.map(function(m,i){

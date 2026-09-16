@@ -1,5 +1,5 @@
 /* Lift Tracker service worker — offline-first caching */
-const CACHE = "lift-v1.7";
+const CACHE = "lift-v1.8";
 const ASSETS = [
   "./",
   "./index.html",
