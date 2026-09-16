@@ -51,6 +51,11 @@ The screen is held awake (Screen Wake Lock API) the whole time the app is in the
 foreground, so the rest timer and its chime survive a long set. The lock is released
 automatically when you switch away, and re-taken when you come back.
 
+Where the phone supports the Audio Session API (iOS 17+), the bell can **duck** music
+that is already playing, **pause** it and let it resume afterwards, or leave it alone —
+Settings → Rest bell, which previews the choice as you tap it. The ringer switch still
+mutes the bell itself on iOS; ducking the music does not get around that.
+
 The countdown runs against a wall-clock deadline rather than its own tick count, so a
 backgrounded or locked phone can't stretch the rest: whatever time actually passed is
 the time that counts. The chime also vibrates where the phone supports it. If the rest

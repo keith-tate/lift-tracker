@@ -343,15 +343,18 @@ function currentDayN(){ return state.day || autoDay(); }
 
 /* ---------------- persistence ---------------- */
 
+function normalizeData(){
+  if(!state.data.sessions) state.data.sessions=[];
+  if(!state.data.starts) state.data.starts={};
+  if(!(state.data.audioMode in AUDIO_MODES)) state.data.audioMode="duck";
+}
+
 function load(){
   try{
     var raw=localStorage.getItem(STORE_KEY);
-    if(raw){
-      state.data=JSON.parse(raw);
-      if(!state.data.sessions) state.data.sessions=[];
-      if(!state.data.starts) state.data.starts={};
-    }
+    if(raw) state.data=JSON.parse(raw);
   }catch(e){}
+  normalizeData();
 }
 function persist(){
   try{ localStorage.setItem(STORE_KEY,JSON.stringify(state.data)); }
@@ -561,6 +564,17 @@ function settingsHTML(){
      "<button class='lt-ghost' id='importBtn'>Import</button></div>"+
      "<button class='lt-reset' id='resetBtn'>Erase all sessions</button>"+
      "<p class='lt-fine'>Everything lives in this device&#39;s local storage. Export writes a JSON backup.</p>"+
+     "<div class='lt-sect'>Rest bell</div>"+
+     (audioSessionSupported()
+       ? "<p class='lt-blurb'>What the bell does to music that is already playing.</p><div class='lt-daypick'>"+
+         [["duck","Duck","Lower it"],["solo","Pause","Stop it"],["off","Nothing","Leave it"]].map(function(o){
+           return "<button class='lt-daybtn"+(state.data.audioMode===o[0]?" is-on":"")+"' data-audio='"+o[0]+
+                  "'>"+o[2]+"<b>"+o[1]+"</b></button>";
+         }).join("")+"</div><p class='lt-fine'>Tap one to hear it against whatever is playing right now.</p>"
+       : "<p class='lt-fine'>This browser can&#39;t ask the phone to duck other audio, so the bell plays over "+
+         "whatever is already going. iOS 17 and up can.</p>")+
+     "<p class='lt-fine'>The bell buzzes the phone too, where vibration is supported. iOS mutes the bell itself "+
+     "with the ringer switch &mdash; ducking the music does not get around that.</p>"+
      "<div class='lt-sect'>Screen</div><p class='lt-fine'>"+
      (wakeSupported()
        ? "The screen is held awake while the app is open, so a rest timer never dies to a locked phone. It lets go as soon as you switch away."
@@ -607,6 +621,15 @@ function bind(){
 
   root.querySelectorAll("[data-rest]").forEach(function(b){
     b.addEventListener("click",function(){ primeAudio(); startTimer(Number(b.dataset.rest)); });
+  });
+
+  root.querySelectorAll("[data-audio]").forEach(function(b){
+    b.addEventListener("click",function(){
+      state.data.audioMode=b.dataset.audio;
+      persist();
+      render();
+      chime();   /* ring it straight away so the choice can be judged against the music */
+    });
   });
 
   root.querySelectorAll("[data-step]").forEach(function(b){
@@ -677,6 +700,42 @@ document.addEventListener("visibilitychange", function(){
    and field commit gives it a chance to wake up. */
 var audio = null;
 
+/* iOS 17+ exposes the platform's audio session, so the bell can say what it is and let
+   the phone deal with whatever else is playing: "transient" ducks the music for the
+   length of the bell, "transient-solo" pauses it and lets it pick up again after.
+   Feature-detected - everywhere else this is a no-op and the bell plays over the top. */
+var AUDIO_MODES = { duck:"transient", solo:"transient-solo", off:null };
+
+function audioSessionSupported(){
+  try{ return !!(navigator.audioSession && "type" in navigator.audioSession); }
+  catch(e){ return false; }
+}
+
+var sessionHold = null, sessionClaimed = false;
+
+function claimAudioSession(){
+  var want = AUDIO_MODES[state.data.audioMode];
+  if(!want || !audioSessionSupported()) return;
+  try{
+    navigator.audioSession.type = want;
+    sessionClaimed = true;
+    /* Always hand it back, even if the bell never manages to ring - leaving the session
+       claimed would duck (or worse, hold) the music for the rest of the workout. */
+    holdSession(3000);
+  }catch(e){}
+}
+
+/* Only ever releases a session this app actually took, so the "play over the top"
+   setting leaves the phone's audio routing completely untouched. */
+function holdSession(ms){
+  if(!sessionClaimed) return;
+  clearTimeout(sessionHold);
+  sessionHold = setTimeout(function(){
+    sessionClaimed = false;
+    try{ if(audioSessionSupported()) navigator.audioSession.type = "auto"; }catch(e){}
+  }, ms);
+}
+
 function primeAudio(){
   try{
     var AC = window.AudioContext || window.webkitAudioContext;
@@ -702,6 +761,7 @@ function strike(ctx){
     osc.connect(g); g.connect(ctx.destination);
     osc.start(t); osc.stop(t + 1.6);
   });
+  holdSession(2200);   /* the second partial stops at ~1.7s; give it room to ring down */
 }
 
 /* The context is left suspended by any trip through the background, and resume() only
@@ -712,6 +772,7 @@ function strike(ctx){
    phone supports it, so a muted handset still gets the cue. */
 function chime(){
   try{ if(navigator.vibrate) navigator.vibrate([180, 90, 180]); }catch(e){}
+  claimAudioSession();
   var ctx = primeAudio();
   if(!ctx) return;
   if(ctx.state === "running"){ strike(ctx); return; }
@@ -838,7 +899,7 @@ document.getElementById("importFile").addEventListener("change",function(ev){
       var d=JSON.parse(r.result);
       if(!d.sessions) throw new Error("bad file");
       state.data=d;
-      if(!state.data.starts) state.data.starts={};
+      normalizeData();
       persist(); render(); toast("Imported "+d.sessions.length+" sessions.");
     }catch(e){ toast("That file didn&#39;t look like a Lift Tracker backup."); }
   };
