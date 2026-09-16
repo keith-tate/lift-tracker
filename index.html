@@ -250,7 +250,7 @@ var state = {
 };
 
 var REST_SEC = 90;
-var timer = { id:null, left:0, forSet:null };
+var timer = { id:null, left:0, forSet:null, endAt:0 };
 
 /* ---------------- helpers ---------------- */
 
@@ -664,7 +664,10 @@ function requestWake(){
 }
 
 document.addEventListener("visibilitychange", function(){
-  if(document.visibilityState === "visible") requestWake();
+  if(document.visibilityState !== "visible") return;
+  requestWake();
+  primeAudio();
+  if(timer.id) tickTimer();
 });
 
 /* ---------------- chime ---------------- */
@@ -677,27 +680,52 @@ var audio = null;
 function primeAudio(){
   try{
     var AC = window.AudioContext || window.webkitAudioContext;
-    if(!AC) return;
+    if(!AC) return null;
     if(!audio) audio = new AC();
-    if(audio.state === "suspended") audio.resume();
-  }catch(e){ audio = null; }
+    /* "interrupted" is what iOS reports after a phone call or another app takes
+       the audio session - it needs the same resume() that "suspended" does. */
+    if(audio.state !== "running" && audio.resume) audio.resume().catch(function(){});
+    return audio;
+  }catch(e){ audio = null; return null; }
 }
 
-function chime(){
-  primeAudio();
-  if(!audio || audio.state !== "running") return;
-  /* Two struck partials, a fifth apart, each ringing down - reads as a bell, not a beep. */
+/* Two struck partials, a fifth apart, each ringing down - reads as a bell, not a beep. */
+function strike(ctx){
   [[880, 0], [1320, 0.09]].forEach(function(v){
-    var t = audio.currentTime + v[1];
-    var osc = audio.createOscillator(), g = audio.createGain();
+    var t = ctx.currentTime + v[1];
+    var osc = ctx.createOscillator(), g = ctx.createGain();
     osc.type = "sine";
     osc.frequency.setValueAtTime(v[0], t);
     g.gain.setValueAtTime(0.0001, t);
     g.gain.exponentialRampToValueAtTime(0.32, t + 0.012);
     g.gain.exponentialRampToValueAtTime(0.0001, t + 1.5);
-    osc.connect(g); g.connect(audio.destination);
+    osc.connect(g); g.connect(ctx.destination);
     osc.start(t); osc.stop(t + 1.6);
   });
+}
+
+/* The context is left suspended by any trip through the background, and resume() only
+   settles a tick later. Reading .state straight after asking for it therefore found a
+   context that was still suspended and dropped the bell on the floor - the reason it
+   only rang some of the time. Ring from the resume instead, with a timeout backstop
+   for the older WebKit that returns nothing from resume(), and buzz too where the
+   phone supports it, so a muted handset still gets the cue. */
+function chime(){
+  try{ if(navigator.vibrate) navigator.vibrate([180, 90, 180]); }catch(e){}
+  var ctx = primeAudio();
+  if(!ctx) return;
+  if(ctx.state === "running"){ strike(ctx); return; }
+  var rung = false;
+  function ring(){
+    if(rung) return;
+    rung = true;
+    if(ctx.state === "running") strike(ctx);
+  }
+  try{
+    var p = ctx.resume && ctx.resume();
+    if(p && p.then) p.then(ring, function(){});
+  }catch(e){}
+  setTimeout(ring, 400);
 }
 
 /* ---------------- rest timer ---------------- */
@@ -716,21 +744,37 @@ function autoRest(setId,val){
 function startTimer(sec){
   clearInterval(timer.id);
   timer.forSet=null;
+  timer.endAt=Date.now()+sec*1000;
   timer.left=sec;
   document.getElementById("timer").classList.add("is-on");
   paintTimer();
-  timer.id=setInterval(function(){
-    timer.left--;
-    if(timer.left<=0){ stopTimer(); chime(); toast("Rest done &mdash; next set."); return; }
-    paintTimer();
-  },1000);
+  /* Quarter-second ticks measured against a wall-clock deadline. Phones throttle and
+     then freeze setInterval in the background, so counting our own seconds down drifts
+     long and a frozen tab never reaches zero at all; the deadline survives both, and
+     visibilitychange re-checks it the moment the app comes back. */
+  timer.id=setInterval(tickTimer,250);
+}
+
+function tickTimer(){
+  var over=Date.now()-timer.endAt;
+  if(over>=0){
+    /* More than a couple of seconds past means the app was asleep through the end of
+       the rest: the moment for a bell has gone, so just clear the clock and say so. */
+    var late=over>2000;
+    stopTimer();
+    if(late) toast("Rest finished while the app was in the background.");
+    else{ chime(); toast("Rest done &mdash; next set."); }
+    return;
+  }
+  timer.left=Math.ceil(-over/1000);
+  paintTimer();
 }
 function paintTimer(){
   var m=Math.floor(timer.left/60), s=timer.left%60;
   document.getElementById("timerNum").textContent=m+":"+String(s).padStart(2,"0");
 }
 function stopTimer(){
-  clearInterval(timer.id); timer.id=null; timer.forSet=null;
+  clearInterval(timer.id); timer.id=null; timer.forSet=null; timer.endAt=0;
   document.getElementById("timer").classList.remove("is-on");
 }
 document.getElementById("timerX").addEventListener("click",stopTimer);
